@@ -1,48 +1,50 @@
 pluginManagement {
-	repositories {
-		mavenCentral()
-		gradlePluginPortal()
-		maven {
-			url 'https://repo.spring.io/plugins-release'
-		}
-		if (version.endsWith('BUILD-SNAPSHOT')) {
-			maven { url "https://repo.spring.io/snapshot" }
-		}
-	}
-	resolutionStrategy {
-		eachPlugin {
-			if (requested.id.id == "org.jetbrains.kotlin.jvm") {
-				useVersion "${kotlinVersion}"
-			}
-			if (requested.id.id == "org.jetbrains.kotlin.plugin.spring") {
-				useVersion "${kotlinVersion}"
-			}
-		}
-	}
+    repositories {
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        mavenCentral()
+        gradlePluginPortal()
+        maven {
+            url 'https://repo.spring.io/plugins-release'
+        }
+        if (version.endsWith('BUILD-SNAPSHOT')) {
+            maven { url "https://repo.spring.io/snapshot" }
+        }
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "org.jetbrains.kotlin.jvm") {
+                useVersion "${kotlinVersion}"
+            }
+            if (requested.id.id == "org.jetbrains.kotlin.plugin.spring") {
+                useVersion "${kotlinVersion}"
+            }
+        }
+    }
 }
 
 plugins {
-	id "com.gradle.enterprise" version "3.3.3"
-	id "io.spring.gradle-enterprise-conventions" version "0.0.3"
+    id "com.gradle.enterprise" version "3.3.3"
+//    id "io.spring.gradle-enterprise-conventions" version "0.0.3"
 }
 
-rootProject.name="spring-boot-build"
+rootProject.name = "spring-boot-build"
 
 settings.gradle.projectsLoaded {
-	gradleEnterprise {
-		buildScan {
-			if (settings.gradle.rootProject.hasProperty('buildJavaHome')) {
-				value('Build Java home', settings.gradle.rootProject.getProperty('buildJavaHome'))
-			}
+    gradleEnterprise {
+        buildScan {
+            if (settings.gradle.rootProject.hasProperty('buildJavaHome')) {
+                value('Build Java home', settings.gradle.rootProject.getProperty('buildJavaHome'))
+            }
 
-			settings.gradle.rootProject.getBuildDir().mkdirs()
-			new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "build scan not generated"
+            settings.gradle.rootProject.getBuildDir().mkdirs()
+            new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "build scan not generated"
 
-			buildScanPublished { scan ->
-				new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "<${scan.buildScanUri}|build scan>\n"
-			}
-		}
-	}
+            buildScanPublished { scan ->
+                new File(settings.gradle.rootProject.getBuildDir(), "build-scan-uri.txt").text = "<${scan.buildScanUri}|build scan>\n"
+            }
+        }
+    }
 }
 
 include "spring-boot-project:spring-boot-dependencies"
@@ -74,9 +76,9 @@ include "spring-boot-tests:spring-boot-integration-tests:spring-boot-launch-scri
 include "spring-boot-tests:spring-boot-integration-tests:spring-boot-server-tests"
 
 file("${rootDir}/spring-boot-project/spring-boot-starters").eachDirMatch(~/spring-boot-starter.*/) {
-	include "spring-boot-project:spring-boot-starters:${it.name}"
+    include "spring-boot-project:spring-boot-starters:${it.name}"
 }
 
 file("${rootDir}/spring-boot-tests/spring-boot-smoke-tests").eachDirMatch(~/spring-boot-smoke-test.*/) {
-	include "spring-boot-tests:spring-boot-smoke-tests:${it.name}"
+    include "spring-boot-tests:spring-boot-smoke-tests:${it.name}"
 }
